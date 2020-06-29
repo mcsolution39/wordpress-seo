@@ -6,10 +6,7 @@
  */
 
 use Yoast\WP\Lib\Model;
-use Yoast\WP\SEO\Actions\Indexation\Indexable_General_Indexation_Action;
-use Yoast\WP\SEO\Actions\Indexation\Indexable_Post_Indexation_Action;
-use Yoast\WP\SEO\Actions\Indexation\Indexable_Post_Type_Archive_Indexation_Action;
-use Yoast\WP\SEO\Actions\Indexation\Indexable_Term_Indexation_Action;
+use Yoast\WP\SEO\Integrations\Admin\Indexation_Integration;
 
 /**
  * This code handles the option upgrades.
@@ -788,23 +785,12 @@ class WPSEO_Upgrade {
 	 * else to `false`.
 	 */
 	public function set_indexation_completed_option_for_145() {
-		$post_indexation              = YoastSEO()->classes->get( Indexable_Post_Indexation_Action::class );
-		$term_indexation              = YoastSEO()->classes->get( Indexable_Term_Indexation_Action::class );
-		$post_type_archive_indexation = YoastSEO()->classes->get( Indexable_Post_Type_Archive_Indexation_Action::class );
-		$general_indexation           = YoastSEO()->classes->get( Indexable_General_Indexation_Action::class );
+		/**
+		 * @var Indexation_Integration
+		 */
+		$indexation_integration = YoastSEO()->classes->get( Indexation_Integration::class );
 
-		$total_unindexed = 0;
-		$total_unindexed += $post_indexation->get_total_unindexed();
-		$total_unindexed += $term_indexation->get_total_unindexed();
-		$total_unindexed += $post_type_archive_indexation->get_total_unindexed();
-		$total_unindexed += $general_indexation->get_total_unindexed();
-
-		if ( $total_unindexed === 0 ) {
-			WPSEO_Options::set( 'indexables_indexation_completed', true );
-		}
-		else {
-			WPSEO_Options::set( 'indexables_indexation_completed', false );
-		}
+		WPSEO_Options::set( 'indexables_indexation_completed', $indexation_integration->get_total_unindexed() === 0 );
 	}
 
 	/**

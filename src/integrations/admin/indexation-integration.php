@@ -257,7 +257,7 @@ class Indexation_Integration implements Integration_Interface {
 	 *
 	 * @return int
 	 */
-	protected function get_total_unindexed() {
+	public function get_total_unindexed() {
 		if ( \is_null( $this->total_unindexed ) ) {
 			$this->total_unindexed = $this->post_indexation->get_total_unindexed();
 			$this->total_unindexed += $this->term_indexation->get_total_unindexed();
